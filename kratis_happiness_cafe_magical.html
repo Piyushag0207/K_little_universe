@@ -1,0 +1,97 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Krati's Happiness Café 💗</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#ffe9f1;font-family:system-ui,-apple-system,sans-serif;color:#75415a}#game{max-width:490px;margin:auto;min-height:100vh;padding:18px 14px 32px;background:linear-gradient(150deg,#fff0f6,#ffe8d6)}
+header{text-align:center}header h1{font-size:26px;margin:6px 0}header p{margin:5px;font-size:14px}.eyebrow{font-size:11px;letter-spacing:2px;font-weight:800}
+.panel{background:#fffafd;border:2px solid #f4c4d6;border-radius:20px;padding:14px;margin-top:12px;text-align:center}
+button{border:2px solid #ed91b5;background:#f8b2cc;color:#723b57;border-radius:14px;padding:11px 8px;font-weight:750;cursor:pointer;touch-action:manipulation;font-size:14px}
+button:active{transform:scale(.96)}button:disabled{opacity:.4}.controls{display:flex;justify-content:center;gap:9px;margin:14px 0}.controls button{font-size:12px}.score{display:flex;justify-content:space-between;gap:7px;font-size:12px;font-weight:750}.score div{background:#fff9fc;border-radius:12px;padding:10px 7px}
+.avatar{font-size:75px;animation:bob 2s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-7px) rotate(4deg)}}.line{background:#fff0f6;padding:13px;border-radius:13px;font-size:14px;margin:12px 0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.grid button{min-height:44px}.chip{background:#fff0f6;border:1px solid #f1b5ce;font-size:12px}.chip.selected{background:#f9b3cf;border-color:#e978a5}.wide{width:100%;margin-top:12px}.hidden{display:none!important}.small{font-size:12px}.bar{height:14px;border-radius:20px;background:#f9dce7;overflow:hidden}.barfill{height:100%;background:linear-gradient(90deg,#f7a3bf,#eb78a2);width:0;transition:width .15s}
+#bowl{width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,#ffdfa8 0%,#efb879 62%,#b97954 65%,#f4c1a0 75%);margin:15px auto;display:flex;align-items:center;justify-content:center;font-size:60px;touch-action:none;user-select:none}
+.temp-track{height:17px;border-radius:20px;background:linear-gradient(90deg,#8cccf4,#b6e3ef,#9bd5a2,#ffdc91,#f58b80);position:relative;margin:14px 0 5px}.temp-dot{position:absolute;top:-5px;width:10px;height:27px;background:#75415a;border:2px solid white;border-radius:10px;transform:translateX(-50%)}input[type=range]{width:100%;accent-color:#ed91b5}.temp-labels{display:flex;justify-content:space-between;font-size:12px}.dish{font-size:75px;margin:14px 0}
+.magic-stage{height:155px;position:relative;overflow:hidden;border-radius:20px;background:radial-gradient(circle,#fffdf5,#ffe0ed);margin:12px 0}.magic-customer{position:absolute;left:50%;top:8px;transform:translateX(-50%);font-size:55px}.magic-food{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);font-size:50px;animation:serve 1.4s ease-in-out forwards}
+@keyframes serve{0%{bottom:4px;transform:translateX(-50%) scale(.7) rotate(-12deg);opacity:.5}50%{bottom:55px;transform:translateX(-50%) scale(1.2) rotate(8deg);opacity:1}85%{bottom:65px;transform:translateX(-50%) scale(.7)}100%{bottom:68px;transform:translateX(-50%) scale(0);opacity:0}}
+.sparkle{position:absolute;bottom:25px;font-size:24px;animation:spark 1.5s ease-out forwards;pointer-events:none}@keyframes spark{0%{opacity:0;transform:translate(0,0) scale(.3)}25%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(80deg) scale(1.5)}}
+#surprise{background:linear-gradient(140deg,#ffe5f1,#fff5ce);border:2px solid #f4a8ca;border-radius:20px;padding:20px;margin-top:12px;text-align:center;animation:appear .5s ease-out}@keyframes appear{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}.feedback{font-size:12px;margin-top:12px;background:#fff0f6;border-radius:12px;padding:12px;text-align:left;line-height:1.6}footer{text-align:center;font-size:12px;opacity:.75;margin-top:15px}
+</style></head><body><main id="game">
+<header><div class="eyebrow">✿ MADE FOR KRATI ✿</div><h1>Krati's Happiness Café ☕</h1><p>Every order comes with a little magic 💗</p></header>
+<div class="controls"><button id="music">🎵 Music: Auto</button><button id="sfx">🔔 Sounds On</button></div>
+<div class="score"><div>⭐ <span id="stars">0</span> stars</div><div>💕 <span id="served">0</span> served</div><div>🔥 <span id="streak">0</span> streak</div></div>
+<section class="panel"><div class="small"><b>🌷 CUSTOMER COUNTER</b></div><div id="avatar" class="avatar">🐰</div><b id="name">Mochi the Bunny</b><div id="line" class="line"></div><div class="small">Listen carefully to the clue!</div></section>
+<section id="menu" class="panel"><b>🍰 Krati's Menu</b><div class="grid" id="options"></div></section>
+<section id="ingredients" class="panel hidden"><b>🥣 Step 1: Ingredients</b><p class="small">Pick the 3 ingredients you think belong in this recipe!</p><div id="ingredient-grid" class="grid three"></div><p class="small">In your bowl: <span id="picked">Nothing yet</span></p><button class="wide" id="to-mix" disabled>Next: Mix →</button></section>
+<section id="mixing" class="panel hidden"><b>🥄 Step 2: Mix it!</b><p class="small">Swipe your finger across the bowl repeatedly.</p><div id="bowl">🥣</div><div class="bar"><div id="mixfill" class="barfill"></div></div><button class="wide hidden" id="to-heat">Next: Cook →</button></section>
+<section id="heating" class="panel hidden"><b>🔥 Step 3: Find the perfect temperature!</b><div id="heatclue" class="line"></div><div class="temp-track"><div id="tempdot" class="temp-dot" style="left:0%"></div></div><input id="heat" type="range" min="0" max="100" value="0"><div class="temp-labels"><span>❄️ Cold</span><span>🌤️ Warm</span><span>🔥 Hot</span></div><p id="heatvalue" class="small">Heat: 0%</p><button id="cook" class="wide">Cook! 🍳</button></section>
+<section id="decor" class="panel hidden"><b>🍓 Step 4: Decorate!</b><div id="dish" class="dish">🧁</div><p class="small">Choose a finishing touch.</p><div id="toppings" class="grid"></div><button id="serve" class="wide" disabled>💝 Serve to customer</button></section>
+<section id="magic" class="panel hidden"><b>✨ Serving with love... ✨</b><div id="stage" class="magic-stage"><div id="magic-customer" class="magic-customer">🐰</div><div id="magic-food" class="magic-food">🧁</div></div><p class="small">A little sprinkle of happiness! 💕</p></section>
+<section id="result" class="panel hidden"><div id="reaction" style="font-size:60px">🥰</div><b id="resultline"></b><p id="scoreline"></p><div id="feedback" class="feedback"></div><button id="next" class="wide">Next customer →</button></section>
+<section id="surprise" class="hidden"><div style="font-size:50px">💌✨</div><h3>A Little Note for Krati</h3><p id="surprisetext"></p><button id="continue" class="wide">Awww! Continue 💗</button></section>
+<footer>🌸 A little café, a lot of love 🌸</footer>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const dishes=[['🧁','Cupcake'],['🍪','Cookies'],['🍫','Brownie'],['🧇','Waffles'],['🥞','Pancakes'],['🍩','Donut'],['🍦','Ice Cream'],['☕','Hot Chocolate']];
+const recipes=[
+{items:[2,0,6],heat:[65,75],clue:'🧁 A cupcake loves a fairly hot oven, but not the hottest setting!'},
+{items:[2,4,6],heat:[60,70],clue:'🍪 Cookies need a nicely heated oven to turn golden and crunchy.'},
+{items:[3,4,0],heat:[55,65],clue:'🍫 Brownies like a moderate oven so they stay deliciously fudgy.'},
+{items:[2,1,0],heat:[65,75],clue:'🧇 Waffles love a hot waffle iron for crispy little pockets!'},
+{items:[2,1,0],heat:[45,55],clue:'🥞 Pancakes prefer gentle, steady warmth rather than intense heat.'},
+{items:[2,0,6],heat:[55,65],clue:'🍩 Donuts need medium-hot oil — not too cool and not too fiery!'},
+{items:[1,8,6],heat:[0,15],clue:'🍦 Ice cream needs the coldest setting. Definitely no hot oven!'},
+{items:[1,3,6],heat:[40,50],clue:'☕ Hot chocolate likes gentle heat, warm enough to melt chocolate without boiling.'}
+];
+const guests=[
+['🐰','Mochi the Bunny',0,'Hi Krati! I want something fluffy, tiny, and covered with pretty frosting!','This is SO fluffy! You are the best, Krati!'],
+['🐱','Princess Meow',6,'Hello Krati, darling! I want something cold, creamy, and fit for royalty.','Purrfection! Five stars, obviously.'],
+['🐻','Bobo the Bear',7,'Hey Krati! I want something warm, chocolatey, and perfect for a rainy day.','A hug in a cup! Bobo approves!'],
+['🦖','Overthinkingasaurus Rex',1,'KRATIIII! I want something crunchy with little chocolate bits… or do I? AAAAA!','OMG Kratiii! 🥹 These are sooo yummy! My brain has officially stopped overthinking… for the next 5 minutes! 😂💗'],
+['🐼','Panda Pudding',4,'Hiii Krati! I want a soft stack of breakfast happiness with syrup!','Yummm! Now I can nap peacefully!'],
+['🦊','Fifi the Fox',5,'Hey Krati! I want a round, sweet ring with a colourful glaze!','A masterpiece! So pretty!'],
+['🐸','Froggy Pop',3,'Hi Krati! I want something with little square pockets to hold syrup!','Ribbit! This is amazing!'],
+['🐨','Koko the Koala',2,'Hello Krati! I need a rich, fudgy chocolate square!','Chocolate heaven!'],
+['🐶','Biscuit the Puppy',1,'Kratiii! I want something crunchy I can nibble with milk!','WOOF! BEST SNACK EVER!'],
+['🦄','Lulu the Unicorn',0,'Hiii Krati! I want a little cake with magical pink frosting!','Sparkly and sweet, just like magic!']
+];
+const notes=[
+'Kratiii! 🥹 You just made two little hearts happy. Your kindness makes even ordinary moments feel special. 💗',
+'Four happy customers already! 🌷 You have this lovely way of making little things feel magical. Keep that smile, okay? ✨',
+'Six little smiles, all because of you! 🧸 Remember, Krati, you deserve the same warmth and care that you give to others. 💕',
+'Eight customers and so much happiness! 🌈 Even on difficult days, there is still room for tiny moments of joy. You deserve every one of them. 💗',
+'KRATIIII! 🎉 Ten happy customers! You are officially the Queen of Happiness Café! 👑💖 Every little animal is cheering for you!'
+];
+const ingredients=['🥚 Egg','🥛 Milk','🌾 Flour','🍫 Chocolate','🧈 Butter','🍓 Strawberry','🍬 Sugar','🍯 Honey','🍦 Cream'];
+const toppings=['🍓 Strawberry','🍫 Chocolate','🌈 Sprinkles','🍯 Honey'];
+let index=0,stars=0,served=0,streak=0,chosen=-1,picked=[],mix=0,heatValue=0,top=-1,lastX=null,lastY=null;
+let ctx=null,musicOn=false,musicAllowed=true,sfxOn=true,musicTimer=null,noteIndex=0;
+function audio(){try{if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume();return ctx}catch(e){return null}}
+function tone(freq,duration=.1,type='sine',volume=.04,delay=0){const c=audio();if(!c)return;const t=c.currentTime+delay,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(volume,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+duration+.02)}
+function tap(){if(sfxOn)tone(660,.055,'sine',.035)}
+function success(){if(sfxOn)[523,659,784,1047].forEach((f,i)=>tone(f,.25,'sine',.055,i*.11))}
+function soft(){if(sfxOn){tone(440,.16,'sine',.035);tone(587,.22,'sine',.03,.13)}}
+function musicStep(){if(!musicOn)return;const melody=[523.25,659.25,783.99,659.25,587.33,698.46,783.99,587.33,523.25,659.25,880,783.99,698.46,587.33,659.25,523.25];tone(melody[noteIndex%melody.length],.37,'sine',.014);if(noteIndex%4===0)tone([261.63,293.66,349.23,261.63][Math.floor(noteIndex/4)%4],1.15,'sine',.008);noteIndex++}
+function startMusic(){if(musicOn||!musicAllowed)return;audio();musicOn=true;$('music').textContent='🎵 Music On';musicStep();musicTimer=setInterval(musicStep,420)}
+document.getElementById('game').addEventListener('pointerdown',function firstTouch(e){if(e.target.closest('#music')||e.target.closest('#sfx'))return;startMusic();document.getElementById('game').removeEventListener('pointerdown',firstTouch)});
+$('music').onclick=()=>{if(musicOn){musicOn=false;musicAllowed=false;clearInterval(musicTimer);musicTimer=null;$('music').textContent='🔇 Music Off'}else{musicAllowed=true;startMusic()}};
+$('sfx').onclick=()=>{sfxOn=!sfxOn;$('sfx').textContent=sfxOn?'🔔 Sounds On':'🔕 Sounds Off';if(sfxOn)tap()};
+document.getElementById('game').addEventListener('click',e=>{if(e.target.closest('button')&&!e.target.closest('#music')&&!e.target.closest('#sfx'))tap()});
+function show(id){['menu','ingredients','mixing','heating','decor','magic','result'].forEach(x=>$(x).classList.toggle('hidden',x!==id))}
+function guest(){const g=guests[index%guests.length];$('avatar').textContent=g[0];$('name').textContent=g[1];$('line').textContent='"'+g[3]+'"';$('surprise').classList.add('hidden');show('menu')}
+dishes.forEach((d,i)=>{const b=document.createElement('button');b.textContent=d[0]+' '+d[1];b.onclick=()=>{chosen=i;picked=[];$('picked').textContent='Nothing yet';$('to-mix').disabled=true;document.querySelectorAll('#ingredient-grid .chip').forEach(x=>x.classList.remove('selected'));show('ingredients')};$('options').appendChild(b)});
+ingredients.forEach((name,i)=>{const b=document.createElement('button');b.className='chip';b.textContent=name;b.onclick=()=>{tap();if(picked.includes(i)){picked=picked.filter(x=>x!==i);b.classList.remove('selected')}else if(picked.length<3){picked.push(i);b.classList.add('selected')}$('picked').textContent=picked.map(x=>ingredients[x]).join(', ')||'Nothing yet';$('to-mix').disabled=picked.length!==3};$('ingredient-grid').appendChild(b)});
+$('to-mix').onclick=()=>{mix=0;lastX=null;lastY=null;$('mixfill').style.width='0%';$('to-heat').classList.add('hidden');show('mixing')};
+const bowl=$('bowl');
+function stir(e){if($('mixing').classList.contains('hidden'))return;const rect=bowl.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;if(lastX!==null){const dist=Math.hypot(x-lastX,y-lastY),old=mix;mix=Math.min(100,mix+Math.min(9,dist/8));$('mixfill').style.width=mix+'%';bowl.style.transform='rotate('+mix*3+'deg)';if(Math.floor(mix/20)>Math.floor(old/20))tap();if(mix>=100)$('to-heat').classList.remove('hidden')}lastX=x;lastY=y}
+bowl.addEventListener('pointerdown',e=>{bowl.setPointerCapture(e.pointerId);lastX=null;stir(e)});bowl.addEventListener('pointermove',e=>{if(e.buttons)stir(e)});bowl.addEventListener('pointerup',()=>{lastX=null});
+$('to-heat').onclick=()=>{$('heat').value=0;heatValue=0;$('heatvalue').textContent='Heat: 0%';$('tempdot').style.left='0%';$('heatclue').textContent=recipes[chosen].clue;show('heating')};
+$('heat').oninput=()=>{heatValue=Number($('heat').value);$('heatvalue').textContent='Heat: '+heatValue+'%';$('tempdot').style.left=heatValue+'%'};
+$('cook').onclick=()=>{heatValue=Number($('heat').value);top=-1;$('dish').textContent=dishes[chosen][0];$('serve').disabled=true;document.querySelectorAll('#toppings .chip').forEach(x=>x.classList.remove('selected'));show('decor')};
+toppings.forEach((t,i)=>{const b=document.createElement('button');b.className='chip';b.textContent=t;b.onclick=()=>{tap();top=i;document.querySelectorAll('#toppings .chip').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');$('serve').disabled=false};$('toppings').appendChild(b)});
+function sparkles(){const stage=$('stage');stage.querySelectorAll('.sparkle').forEach(x=>x.remove());for(let i=0;i<15;i++){const s=document.createElement('span');s.className='sparkle';s.textContent=['✨','💗','⭐','🌸'][i%4];s.style.left=(15+Math.random()*70)+'%';s.style.setProperty('--dx',(Math.random()*180-90)+'px');s.style.setProperty('--dy',(-45-Math.random()*95)+'px');s.style.animationDelay=(Math.random()*.35)+'s';stage.appendChild(s)}}
+function finishServe(){const g=guests[index%guests.length],rec=recipes[chosen],correct=chosen===g[2],matched=picked.filter(x=>rec.items.includes(x)).length,heatGood=heatValue>=rec.heat[0]&&heatValue<=rec.heat[1],points=(correct?5:1)+matched+(heatGood?2:0)+1;stars+=points;served++;streak=correct?streak+1:0;$('stars').textContent=stars;$('served').textContent=served;$('streak').textContent=streak;$('reaction').textContent=correct?'🥰✨':'😅';$('resultline').textContent=correct?g[4]:'Aww Krati, that is not quite what I imagined… but thank you for trying! 💕';$('scoreline').textContent='+'+points+' happiness stars ⭐';$('feedback').textContent='🥣 Ingredients: '+matched+'/3 correct. '+(matched===3?'Perfect recipe! 🌟':matched===2?'Almost perfect! 💗':'A little kitchen experiment! 🧁')+'  🔥 Temperature: '+(heatGood?'Perfect! ✅':'Not quite! Ideal range: '+rec.heat[0]+'–'+rec.heat[1]+'%.')+(matched<3?' Correct ingredients: '+rec.items.map(i=>ingredients[i]).join(', ')+'.':'');show('result');if(correct&&matched===3&&heatGood)success();else soft()}
+$('serve').onclick=()=>{$('magic-customer').textContent=guests[index%guests.length][0];$('magic-food').textContent=dishes[chosen][0];const food=$('magic-food');food.style.animation='none';void food.offsetWidth;food.style.animation='serve 1.4s ease-in-out forwards';show('magic');sparkles();setTimeout(finishServe,1700)};
+$('next').onclick=()=>{if(served%2===0){$('surprisetext').textContent=notes[(Math.floor(served/2)-1)%notes.length];$('surprise').classList.remove('hidden');$('result').classList.add('hidden');success()}else{index++;guest()}};
+$('continue').onclick=()=>{index++;guest()};
+guest();
+})();
+</script></body></html>
